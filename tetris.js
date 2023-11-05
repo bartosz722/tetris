@@ -1,7 +1,7 @@
 'use strict'
 
-const fieldRows = 30
-const fieldColumns = 10
+const fieldRows = 20
+const fieldColumns = 15
 const moveDownInterval = 1000 // ms
 
 let gameRunning = false
@@ -9,7 +9,7 @@ let points = 0
 let field // Array of arrays with color name or null.
 let currPiece
 
-const colors = ['red', 'green', 'blue', 'yellow']
+const colors = ['red', 'green', 'yellow', 'lightblue']
 
 const pieceDefs = [
     {
@@ -52,11 +52,29 @@ const pieceDefs = [
             ],
         ],
     },
+    {
+        color: colors[2],
+        blocks: [
+            [
+                [0, 0, 0, 0],
+                [1, 1, 1, 1],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+            ],
+            [
+                [0, 1, 0, 0],
+                [0, 1, 0, 0],
+                [0, 1, 0, 0],
+                [0, 1, 0, 0],
+            ],
+        ],
+    },
 ]
 
 // Check if the piece collides with the dropped ones or moves out of field (excluding the top).
 function pieceCollides(piece, moreShiftRow, moreShiftCol) {
-    return false // TODO
+    // TODO
+    return piece.shiftRow >= fieldRows
 }
 
 function rotatePiece(piece, left) {
@@ -92,6 +110,7 @@ function putNewPiece() {
         shiftCol: 0,
         rotateIdx: 0,
     }
+    console.log('New piece: defIdx', defIdx)
 }
 
 function setupKeyEvents() {
@@ -145,16 +164,25 @@ function movePieceDown() {
     }
 }
 
-function refreshView() {
-    // TODO
-}
-
 // Get the color using the the current and dropped pieces.
+// Returns string or null.
 function getFieldColor(row, col) {
-    return colors[0] // TODO
+    if (row < 0 || row >= fieldRows) throw `Row out of range: ${row}`
+    if (col < 0 || col >= fieldRows) throw `Column out of range: ${col}`
+    
+    const pRowIdx = row - currPiece.shiftRow
+    const pieceRows = currPiece.def.blocks[currPiece.rotateIdx]
+    if (pRowIdx >= 0 && pRowIdx < pieceRows.length) {
+        const pieceCols = pieceRows[pRowIdx]
+        const pColIdx = col - currPiece.shiftCol
+        if (pColIdx >= 0 && pColIdx < pieceCols.length) {
+            if (pieceCols[pColIdx]) {
+                return currPiece.def.color
+            }
+        }
+    }
+
+    return field[row][col]
 }
 
 setupKeyEvents()
-startTetris()
-
-console.log(currPiece)

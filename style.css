@@ -5,8 +5,6 @@ html, body {
 
 #canvas1 {
     display: block;
-    width: 300px;
-    height: 200px;
     margin: auto;
     margin-top: 20px;
     background-color: aquamarine;
