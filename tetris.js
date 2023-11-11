@@ -71,26 +71,29 @@ const pieceDefs = [
     },
 ]
 
-// Check if the piece collides with the dropped ones or moves out of field (excluding the top).
-function pieceCollides(piece, moreShiftRow, moreShiftCol) {
-    // TODO
-    return piece.shiftRow >= fieldRows
-}
-
-function rotatePiece(piece, left) {
-    len = piece.def.blocks.length
-    if (left) {
-        piece.rotateIdx--
-        if (piece.rotateIdx < 0) {
-            piece.rotateIdx = len - 1
+// Check if the piece collides with the dropped ones or moves out of field.
+// moreShiftRow, moreShiftCol - number (0 - no shift)
+// newRotateIdx - wanted index or undefined
+function pieceCollides(piece, moreShiftRow, moreShiftCol, newRotateIdx) {
+    const rotateIdx = newRotateIdx ?? piece.rotateIdx
+    const rows = piece.def.blocks[rotateIdx]
+    for (let rowIdx = 0; rowIdx < rows.length; rowIdx++ ) {
+        const row = rows[rowIdx]
+        for (let colIdx = 0; colIdx < row.length; colIdx++) {
+            const pix = row[colIdx]
+            if (pix) {
+                const rowPos = rowIdx + piece.shiftRow + moreShiftRow
+                const colPos = colIdx + piece.shiftCol + moreShiftCol
+                if (rowPos < 0 || rowPos >= fieldRows || colPos < 0 || colPos >= fieldColumns) {
+                    return true // Outside field.
+                }
+                if (field[rowPos][colPos]) {
+                    return true // Collision with the dropped pieces.
+                }
+            }
         }
     }
-    else {
-        piece.rotateIdx++
-        if (piece.rotateIdx >= len) {
-            piece.rotateIdx = 0
-        }
-    }
+    return false
 }
 
 function startTetris() {
@@ -120,13 +123,13 @@ function setupKeyEvents() {
 function handleKeyDown(e) {
     console.log(e.code)
     if (e.code == 'ArrowRight') {
-        movePieceOnSide(true)
+        tryMovePieceOnSide(true)
     }
     else if (e.code == 'ArrowLeft') {
-        movePieceOnSide(false)
+        tryMovePieceOnSide(false)
     }
     else if (e.code == 'ArrowUp') {
-        rotatePiece(true)
+        tryRotatePiece(true)
     }
     else if (e.code == 'ArrowDown') {
         movePieceDown()
@@ -136,7 +139,7 @@ function handleKeyDown(e) {
 }
 
 // Move the piece if possible
-function movePieceOnSide(right) {
+function tryMovePieceOnSide(right) {
     const shift = right ? 1 : -1
     if (gameRunning && !pieceCollides(currPiece, 0, shift)) {
         currPiece.shiftCol += shift
@@ -144,11 +147,26 @@ function movePieceOnSide(right) {
     }
 }
 
-function rotatePiece(right) {
+function tryRotatePiece(right) {
     if (gameRunning) {
-        // TODO: check if collides, rotate
-        refreshView()        
+        const newRotateIdx = getNextRotateIdx(currPiece, right)
+        if (!pieceCollides(currPiece, 0, 0, newRotateIdx)) {
+            currPiece.rotateIdx = newRotateIdx
+            refreshView()        
+        }
     }
+}
+
+function getNextRotateIdx(piece, right) {
+    let nextIdx = piece.rotateIdx + (right ? 1 : -1)
+    const len = piece.def.blocks.length
+    if (nextIdx >= len) {
+        nextIdx = 0
+    }
+    else if (nextIdx < 0) {
+        nextIdx = len - 1
+    }
+    return nextIdx
 }
 
 function movePieceDown() {
