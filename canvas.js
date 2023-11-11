@@ -26,6 +26,7 @@ function refreshView() {
     }
 }
 
+// TODO: fix color painting
 function paintBlock(row, col, color) {
     ctx.fillStyle = color
     ctx.strokeStyle = 'black';

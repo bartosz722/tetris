@@ -8,6 +8,7 @@ let gameRunning = false
 let points = 0
 let field // Array of arrays with color name or null.
 let currPiece
+let pieceCount = 0
 
 const colors = ['red', 'green', 'yellow', 'lightblue']
 
@@ -85,9 +86,11 @@ function pieceCollides(piece, moreShiftRow, moreShiftCol, newRotateIdx) {
                 const rowPos = rowIdx + piece.shiftRow + moreShiftRow
                 const colPos = colIdx + piece.shiftCol + moreShiftCol
                 if (rowPos < 0 || rowPos >= fieldRows || colPos < 0 || colPos >= fieldColumns) {
+                    console.log('Piece outside field')
                     return true // Outside field.
                 }
                 if (field[rowPos][colPos]) {
+                    console.log('Piece collides with dropped ones')
                     return true // Collision with the dropped pieces.
                 }
             }
@@ -98,11 +101,22 @@ function pieceCollides(piece, moreShiftRow, moreShiftCol, newRotateIdx) {
 
 function startTetris() {
     points = 0
-    field = Array(fieldRows).fill(Array(fieldColumns).fill(null))
+    clearField()
     putNewPiece()
     gameRunning = true
     refreshView()
     setInterval(movePieceDown, moveDownInterval)
+}
+
+function clearField() {
+    field = []
+    for (let r = 0; r < fieldRows; r++) {
+        const row = []
+        field.push(row)
+        for (let c = 0; c < fieldColumns; c++) {
+            row.push(null)
+        }
+    }
 }
 
 function putNewPiece() {
@@ -113,7 +127,8 @@ function putNewPiece() {
         shiftCol: 0,
         rotateIdx: 0,
     }
-    console.log('New piece: defIdx', defIdx)
+    pieceCount += 1
+    console.log(`New piece: count ${pieceCount}, defIdx ${defIdx}`)
 }
 
 function setupKeyEvents() {
@@ -135,6 +150,7 @@ function handleKeyDown(e) {
         movePieceDown()
     }
     else if (e.code == 'Space') {
+        dropPiece()
     }
 }
 
@@ -172,13 +188,46 @@ function getNextRotateIdx(piece, right) {
 function movePieceDown() {
     if (gameRunning) {
         if (pieceCollides(currPiece, 1, 0)) {
-            // TODO: drop and create new piece
+            settlePiece()
             putNewPiece()
         }
         else {
             currPiece.shiftRow += 1
         }
         refreshView()
+    }
+}
+
+function dropPiece() {
+    if (gameRunning) {
+        for (let shift = 1; shift <= fieldRows; shift++) {
+            if (pieceCollides(currPiece, shift, 0)) {
+                currPiece.shiftRow += shift - 1
+                settlePiece()
+                putNewPiece()
+                refreshView()
+                return
+            }
+        }
+        throw 'Piece not settled'
+    }
+}
+
+function settlePiece() {
+    const rows = currPiece.def.blocks[currPiece.rotateIdx]
+    for (let rowIdx = 0; rowIdx < rows.length; rowIdx++) {
+        const row = rows[rowIdx]
+        for (let colIdx = 0; colIdx < row.length; colIdx++) {
+            const pix = row[colIdx]
+            if (pix) {
+                const dstRow = rowIdx + currPiece.shiftRow
+                const dstCol = colIdx + currPiece.shiftCol
+                if (dstRow >= 0 && dstRow < fieldRows && dstCol >= 0 && dstCol < fieldColumns) {
+                    field[dstRow][dstCol] = currPiece.def.color
+                    console.log(`Settle color ${currPiece.def.color} in row ${dstRow} col ${dstCol}`)
+                }
+            }
+        }
     }
 }
 
