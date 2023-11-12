@@ -16,7 +16,10 @@ function clearView() {
 }
 
 function refreshView() {
-    console.log('refreshView')
+    requestAnimationFrame(redrawField)
+}
+
+function redrawField() {
     clearView()
     for (let ri = 0; ri < fieldRows; ri++) {
         for (let ci = 0; ci < fieldColumns; ci++) {
