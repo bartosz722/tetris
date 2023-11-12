@@ -9,8 +9,9 @@ let points = 0
 let field // Array of arrays with color name or null.
 let currPiece
 let pieceCount = 0
+let fullLinesCount = 0
 
-const colors = ['red', 'green', 'yellow', 'lightblue']
+const colors = ['red', 'green', 'yellow', 'violet']
 
 const pieceDefs = [
     {
@@ -70,9 +71,18 @@ const pieceDefs = [
             ],
         ],
     },
+    {
+        color: colors[3],
+        blocks: [
+            [
+                [1, 1],
+                [1, 1],
+            ],
+        ]
+    },
 ]
 
-// Check if the piece collides with the dropped ones or moves out of field.
+// Check if the piece collides with the dropped ones or moves out of the field.
 // moreShiftRow, moreShiftCol - number (0 - no shift)
 // newRotateIdx - wanted index or undefined
 function pieceCollides(piece, moreShiftRow, moreShiftCol, newRotateIdx) {
@@ -109,11 +119,7 @@ function startTetris() {
 function clearField() {
     field = []
     for (let r = 0; r < fieldRows; r++) {
-        const row = []
-        field.push(row)
-        for (let c = 0; c < fieldColumns; c++) {
-            row.push(null)
-        }
+        field.push(createArrayWithValues(fieldColumns))
     }
 }
 
@@ -153,7 +159,7 @@ function checkGameOver() {
     if (pieceCollides(currPiece, 0, 0)) {
         gameRunning = false
         currPiece = null
-        console.log('Game over!')
+        console.log(`Game over! Lines: ${fullLinesCount}`)
         return true
     }
     return false
@@ -232,6 +238,7 @@ function dropPiece() {
             if (pieceCollides(currPiece, shift, 0)) {
                 currPiece.shiftRow += shift - 1
                 settlePiece()
+                eatFullLines()
                 putNewPiece()
                 refreshView()
                 return
@@ -279,6 +286,28 @@ function getFieldColor(row, col) {
     }
 
     return field[row][col]
+}
+
+function eatFullLines() {
+    let rowIdx = fieldRows - 1
+    while (rowIdx >=0) {
+        const row = field[rowIdx]
+        if (row.every(c => c != null)) {
+            eatFullLine(rowIdx)
+            fullLinesCount++
+            console.log(`Full line at row ${rowIdx}. Total: ${fullLinesCount}`)
+        }
+        else {
+            rowIdx--
+        }
+    }
+}
+
+function eatFullLine(rowIdx) {
+    for (; rowIdx > 0; rowIdx--) {
+        field[rowIdx] = field[rowIdx - 1]
+    }
+    field[0] = createArrayWithValues(fieldColumns)
 }
 
 setupKeyEvents()
