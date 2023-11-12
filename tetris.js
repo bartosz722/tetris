@@ -86,11 +86,9 @@ function pieceCollides(piece, moreShiftRow, moreShiftCol, newRotateIdx) {
                 const rowPos = rowIdx + piece.shiftRow + moreShiftRow
                 const colPos = colIdx + piece.shiftCol + moreShiftCol
                 if (rowPos < 0 || rowPos >= fieldRows || colPos < 0 || colPos >= fieldColumns) {
-                    console.log('Piece outside field')
                     return true // Outside field.
                 }
                 if (field[rowPos][colPos]) {
-                    console.log('Piece collides with dropped ones')
                     return true // Collision with the dropped pieces.
                 }
             }
@@ -102,8 +100,8 @@ function pieceCollides(piece, moreShiftRow, moreShiftCol, newRotateIdx) {
 function startTetris() {
     points = 0
     clearField()
-    putNewPiece()
     gameRunning = true
+    putNewPiece()
     refreshView()
     setInterval(movePieceDown, moveDownInterval)
 }
@@ -119,16 +117,46 @@ function clearField() {
     }
 }
 
+// TODO: skip empty pixels in the starting definition when centering
+// TODO: random rotation?
 function putNewPiece() {
     const defIdx = getRandomInt(pieceDefs.length)
-    currPiece = { // TODO position top center, random rotation?
+    currPiece = {
         def: pieceDefs[defIdx],
         shiftRow: 0,
         shiftCol: 0,
         rotateIdx: 0,
     }
+    setShiftColForNewPiece()
+    
+    if (checkGameOver()) {
+        return
+    }
+
     pieceCount += 1
     console.log(`New piece: count ${pieceCount}, defIdx ${defIdx}`)
+}
+
+function setShiftColForNewPiece() {
+    const blocks = getCurrPieceBlocks()
+    const cols = blocks[0].length
+    const shift = Math.floor((fieldColumns - cols) / 2)
+    currPiece.shiftCol = shift
+}
+
+function getCurrPieceBlocks() {
+    return currPiece.def.blocks[currPiece.rotateIdx]
+}
+
+// TODO: show the last piece (partially cut off) instead of deleting it
+function checkGameOver() {
+    if (pieceCollides(currPiece, 0, 0)) {
+        gameRunning = false
+        currPiece = null
+        console.log('Game over!')
+        return true
+    }
+    return false
 }
 
 function setupKeyEvents() {
@@ -136,7 +164,7 @@ function setupKeyEvents() {
 }
 
 function handleKeyDown(e) {
-    console.log(e.code)
+    // console.log(e.code)
     if (e.code == 'ArrowRight') {
         tryMovePieceOnSide(true)
     }
@@ -224,7 +252,6 @@ function settlePiece() {
                 const dstCol = colIdx + currPiece.shiftCol
                 if (dstRow >= 0 && dstRow < fieldRows && dstCol >= 0 && dstCol < fieldColumns) {
                     field[dstRow][dstCol] = currPiece.def.color
-                    console.log(`Settle color ${currPiece.def.color} in row ${dstRow} col ${dstCol}`)
                 }
             }
         }
@@ -235,16 +262,18 @@ function settlePiece() {
 // Returns string or null.
 function getFieldColor(row, col) {
     if (row < 0 || row >= fieldRows) throw `Row out of range: ${row}`
-    if (col < 0 || col >= fieldRows) throw `Column out of range: ${col}`
+    if (col < 0 || col >= fieldColumns) throw `Column out of range: ${col}`
     
-    const pRowIdx = row - currPiece.shiftRow
-    const pieceRows = currPiece.def.blocks[currPiece.rotateIdx]
-    if (pRowIdx >= 0 && pRowIdx < pieceRows.length) {
-        const pieceCols = pieceRows[pRowIdx]
-        const pColIdx = col - currPiece.shiftCol
-        if (pColIdx >= 0 && pColIdx < pieceCols.length) {
-            if (pieceCols[pColIdx]) {
-                return currPiece.def.color
+    if (currPiece) {
+        const pRowIdx = row - currPiece.shiftRow
+        const pieceRows = currPiece.def.blocks[currPiece.rotateIdx]
+        if (pRowIdx >= 0 && pRowIdx < pieceRows.length) {
+            const pieceCols = pieceRows[pRowIdx]
+            const pColIdx = col - currPiece.shiftCol
+            if (pColIdx >= 0 && pColIdx < pieceCols.length) {
+                if (pieceCols[pColIdx]) {
+                    return currPiece.def.color
+                }
             }
         }
     }
