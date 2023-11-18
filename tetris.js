@@ -5,7 +5,6 @@ const fieldColumns = 15
 const moveDownInterval = 1000 // ms
 
 let gameRunning = false
-let points = 0
 let field // Array of arrays with color name or null.
 let currPiece
 let pieceCount = 0
@@ -112,7 +111,7 @@ function pieceCollides(piece, moreShiftRow, moreShiftCol, newRotateIdx) {
 }
 
 function startTetris() {
-    points = 0
+    fullLinesCount = 0
     clearField()
     gameRunning = true
     putNewPiece()

@@ -15,10 +15,6 @@ function clearView() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 }
 
-function refreshView() {
-    requestAnimationFrame(redrawField)
-}
-
 function redrawField() {
     clearView()
     for (let ri = 0; ri < fieldRows; ri++) {

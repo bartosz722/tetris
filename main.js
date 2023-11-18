@@ -1,17 +1,18 @@
 'use strict'
 
-function positionControlPanel() {
-    const shiftPx = 20
-    const ml = canvas.width / 2
-    const cp = document.getElementById('control-panel')
-    cp.style.marginLeft = shiftPx + ml + 'px'
+function refreshView() {
+    requestAnimationFrame(refreshViewHandler)
+}
+
+function refreshViewHandler() {
+    redrawField()
+    refreshPanel()
 }
 
 positionControlPanel()
 startTetris()
 
 /* TODO:
-- pokaż punkty
 - przyciski start, restart
 - pokazywanie ułożonej linii (np. miganie)
 - new piece: skip empty pixels in the starting definition when centering
