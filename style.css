@@ -9,3 +9,10 @@ html, body {
     margin-top: 20px;
     background-color: aquamarine;
 }
+
+#control-panel {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    margin-top: 20px;
+}

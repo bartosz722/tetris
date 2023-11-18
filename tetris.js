@@ -82,6 +82,10 @@ const pieceDefs = [
     },
 ]
 
+function signalRefreshView() {
+    refreshView()
+}
+
 // Check if the piece collides with the dropped ones or moves out of the field.
 // moreShiftRow, moreShiftCol - number (0 - no shift)
 // newRotateIdx - wanted index or undefined
@@ -112,7 +116,7 @@ function startTetris() {
     clearField()
     gameRunning = true
     putNewPiece()
-    refreshView()
+    signalRefreshView()
     setInterval(movePieceDown, moveDownInterval)
 }
 
@@ -123,8 +127,6 @@ function clearField() {
     }
 }
 
-// TODO: skip empty pixels in the starting definition when centering
-// TODO: random rotation?
 function putNewPiece() {
     const defIdx = getRandomInt(pieceDefs.length)
     currPiece = {
@@ -154,7 +156,6 @@ function getCurrPieceBlocks() {
     return currPiece.def.blocks[currPiece.rotateIdx]
 }
 
-// TODO: show the last piece (partially cut off) instead of deleting it
 function checkGameOver() {
     if (pieceCollides(currPiece, 0, 0)) {
         gameRunning = false
@@ -193,7 +194,7 @@ function tryMovePieceOnSide(right) {
     const shift = right ? 1 : -1
     if (gameRunning && !pieceCollides(currPiece, 0, shift)) {
         currPiece.shiftCol += shift
-        refreshView()        
+        signalRefreshView()        
     }
 }
 
@@ -202,7 +203,7 @@ function tryRotatePiece(right) {
         const newRotateIdx = getNextRotateIdx(currPiece, right)
         if (!pieceCollides(currPiece, 0, 0, newRotateIdx)) {
             currPiece.rotateIdx = newRotateIdx
-            refreshView()        
+            signalRefreshView()        
         }
     }
 }
@@ -228,7 +229,7 @@ function movePieceDown() {
         else {
             currPiece.shiftRow += 1
         }
-        refreshView()
+        signalRefreshView()
     }
 }
 
@@ -240,7 +241,7 @@ function dropPiece() {
                 settlePiece()
                 eatFullLines()
                 putNewPiece()
-                refreshView()
+                signalRefreshView()
                 return
             }
         }
