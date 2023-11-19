@@ -5,6 +5,7 @@ const fieldColumns = 15
 const moveDownInterval = 1000 // ms
 
 let gameRunning = false
+let gameOver = false
 let field // Array of arrays with color name or null.
 let currPiece
 let pieceCount = 0
@@ -158,6 +159,7 @@ function getCurrPieceBlocks() {
 function checkGameOver() {
     if (pieceCollides(currPiece, 0, 0)) {
         gameRunning = false
+        gameOver = true
         currPiece = null
         console.log(`Game over! Lines: ${fullLinesCount}`)
         return true

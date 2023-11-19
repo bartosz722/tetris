@@ -1,4 +1,5 @@
 const lineCounterElement = document.getElementById('line-counter')
+const gameOverElement = document.getElementById('game-over')
 
 function positionControlPanel() {
     const shiftPx = 20
@@ -9,4 +10,7 @@ function positionControlPanel() {
 
 function refreshPanel() {
     lineCounterElement.textContent = fullLinesCount
+    if (gameOver) {
+        gameOverElement.removeAttribute('hidden')
+    }
 }
