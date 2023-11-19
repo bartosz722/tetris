@@ -5,6 +5,7 @@
 const fieldRows = 20
 const fieldColumns = 15
 const moveDownInterval = 1000 // ms
+const centerColumn = getCenterColumn()
 
 let refreshViewCallback // Must be set before the game is started.
 let gameRunning = false
@@ -19,11 +20,17 @@ const colors = ['red', 'green', 'yellow', 'violet']
 const pieceDefs = [
     {
         color: colors[0],
+        initShiftFromCenter: -1,
         blocks: [
             [
-                [0, 0, 0],
+                [0, 1, 0],
+                [0, 1, 1],
+                [0, 1, 0],
+            ],
+            [
                 [1, 1, 1],
                 [0, 1, 0],
+                [0, 0, 0],
             ],
             [
                 [0, 1, 0],
@@ -34,16 +41,12 @@ const pieceDefs = [
                 [0, 1, 0],
                 [1, 1, 1],
                 [0, 0, 0],
-            ],
-            [
-                [0, 1, 0],
-                [0, 1, 1],
-                [0, 1, 0],
             ],
         ],
     },
     {
         color: colors[1],
+        initShiftFromCenter: -1,
         blocks: [
             [
                 [1, 1, 0],
@@ -51,31 +54,33 @@ const pieceDefs = [
                 [0, 0, 0],
             ],
             [
+                [0, 0, 1],
+                [0, 1, 1],
                 [0, 1, 0],
-                [1, 1, 0],
-                [1, 0, 0],
             ],
         ],
     },
     {
         color: colors[2],
+        initShiftFromCenter: -1,
         blocks: [
+            [
+                [0, 1, 0, 0],
+                [0, 1, 0, 0],
+                [0, 1, 0, 0],
+                [0, 1, 0, 0],
+            ],
             [
                 [0, 0, 0, 0],
                 [1, 1, 1, 1],
                 [0, 0, 0, 0],
                 [0, 0, 0, 0],
             ],
-            [
-                [0, 1, 0, 0],
-                [0, 1, 0, 0],
-                [0, 1, 0, 0],
-                [0, 1, 0, 0],
-            ],
         ],
     },
     {
         color: colors[3],
+        initShiftFromCenter: 0,
         blocks: [
             [
                 [1, 1],
@@ -110,6 +115,17 @@ function pieceCollides(piece, moreShiftRow, moreShiftCol, newRotateIdx) {
     return false
 }
 
+// Center when column number is even: column_count / 2 - 1
+// Center when column number is odd: floor(column_count / 2)
+function getCenterColumn() {
+    if (fieldColumns % 2 == 0) {
+        return fieldColumns / 2 - 1
+    }
+    else {
+        return Math.floor(fieldColumns / 2)
+    }
+}
+
 function startTetris() {
     fullLinesCount = 0
     clearField()
@@ -128,13 +144,15 @@ function clearField() {
 
 function putNewPiece() {
     const defIdx = getRandomInt(pieceDefs.length)
+    const def = pieceDefs[defIdx]
+    const shiftCol = centerColumn + def.initShiftFromCenter
+    
     currPiece = {
-        def: pieceDefs[defIdx],
+        def: def,
         shiftRow: 0,
-        shiftCol: 0,
+        shiftCol: shiftCol,
         rotateIdx: 0,
     }
-    setShiftColForNewPiece()
     
     if (checkGameOver()) {
         return
@@ -142,17 +160,6 @@ function putNewPiece() {
 
     pieceCount += 1
     console.log(`New piece: count ${pieceCount}, defIdx ${defIdx}`)
-}
-
-function setShiftColForNewPiece() {
-    const blocks = getCurrPieceBlocks()
-    const cols = blocks[0].length
-    const shift = Math.floor((fieldColumns - cols) / 2)
-    currPiece.shiftCol = shift
-}
-
-function getCurrPieceBlocks() {
-    return currPiece.def.blocks[currPiece.rotateIdx]
 }
 
 function checkGameOver() {
@@ -312,3 +319,6 @@ function eatFullLine(rowIdx) {
 }
 
 setupKeyEvents()
+
+console.log(`Field size: ${fieldRows} rows, ${fieldColumns} columns.`)
+console.log(`Center column: ${centerColumn}.`)

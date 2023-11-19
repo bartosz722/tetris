@@ -26,6 +26,13 @@ function redrawField() {
                 paintBlock1(ri, ci, color)
         }
     }
+
+    // Draw a vertical line in the field center.
+    // ctx.beginPath()
+    // ctx.strokeStyle = 'grey';
+    // ctx.moveTo(canvas.width / 2, 0)
+    // ctx.lineTo(canvas.width / 2, canvas.height)
+    // ctx.stroke()
 }
 
 function paintBlock1(row, col, color) {

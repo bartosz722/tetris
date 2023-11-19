@@ -23,10 +23,9 @@ refreshViewCallback = refreshView
 startTetris()
 
 /* TODO:
+- restart interval after dropping
 - przyciski start, restart
 - pokazywanie ułożonej linii (np. miganie)
-- new piece: skip empty pixels in the starting definition when centering
-- new piece: random rotation?
 - game-over: show the last piece (partially cut off) instead of deleting it
 - probability of pieces
 */
