@@ -1,3 +1,5 @@
+// Used modules: none.
+
 'use strict'
 
 // Returns random int >= 0 and <= max.

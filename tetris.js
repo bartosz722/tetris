@@ -1,9 +1,12 @@
+// Used modules: none.
+
 'use strict'
 
 const fieldRows = 20
 const fieldColumns = 15
 const moveDownInterval = 1000 // ms
 
+let refreshViewCallback // Must be set before the game is started.
 let gameRunning = false
 let gameOver = false
 let field // Array of arrays with color name or null.
@@ -82,10 +85,6 @@ const pieceDefs = [
     },
 ]
 
-function signalRefreshView() {
-    refreshView()
-}
-
 // Check if the piece collides with the dropped ones or moves out of the field.
 // moreShiftRow, moreShiftCol - number (0 - no shift)
 // newRotateIdx - wanted index or undefined
@@ -116,7 +115,7 @@ function startTetris() {
     clearField()
     gameRunning = true
     putNewPiece()
-    signalRefreshView()
+    refreshViewCallback()
     setInterval(movePieceDown, moveDownInterval)
 }
 
@@ -195,7 +194,7 @@ function tryMovePieceOnSide(right) {
     const shift = right ? 1 : -1
     if (gameRunning && !pieceCollides(currPiece, 0, shift)) {
         currPiece.shiftCol += shift
-        signalRefreshView()        
+        refreshViewCallback()        
     }
 }
 
@@ -204,7 +203,7 @@ function tryRotatePiece(right) {
         const newRotateIdx = getNextRotateIdx(currPiece, right)
         if (!pieceCollides(currPiece, 0, 0, newRotateIdx)) {
             currPiece.rotateIdx = newRotateIdx
-            signalRefreshView()        
+            refreshViewCallback()        
         }
     }
 }
@@ -230,7 +229,7 @@ function movePieceDown() {
         else {
             currPiece.shiftRow += 1
         }
-        signalRefreshView()
+        refreshViewCallback()
     }
 }
 
@@ -242,7 +241,7 @@ function dropPiece() {
                 settlePiece()
                 eatFullLines()
                 putNewPiece()
-                signalRefreshView()
+                refreshViewCallback()
                 return
             }
         }

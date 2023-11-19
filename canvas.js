@@ -1,3 +1,5 @@
+// Used modules: tetris.
+
 'use strict'
 
 const canvas = document.querySelector('#canvas1')
