@@ -1,4 +1,4 @@
-// Used modules: none.
+// Used modules: pieces.
 
 'use strict'
 
@@ -14,103 +14,6 @@ let field // Array of arrays with color name or null.
 let currPiece
 let pieceCount = 0
 let fullLinesCount = 0
-
-const colors = ['red', 'green', 'yellow', 'violet', 'deepskyblue']
-
-const pieceDefs = [
-    {
-        color: colors[0],
-        initShiftFromCenter: -1,
-        blocks: [
-            [
-                [0, 1, 0],
-                [0, 1, 1],
-                [0, 1, 0],
-            ],
-            [
-                [1, 1, 1],
-                [0, 1, 0],
-                [0, 0, 0],
-            ],
-            [
-                [0, 1, 0],
-                [1, 1, 0],
-                [0, 1, 0],
-            ],
-            [
-                [0, 1, 0],
-                [1, 1, 1],
-                [0, 0, 0],
-            ],
-        ],
-    },
-    {
-        color: colors[1],
-        initShiftFromCenter: -1,
-        blocks: [
-            [
-                [1, 1, 0],
-                [0, 1, 1],
-                [0, 0, 0],
-            ],
-            [
-                [0, 0, 1],
-                [0, 1, 1],
-                [0, 1, 0],
-            ],
-        ],
-    },
-    {
-        color: colors[2],
-        initShiftFromCenter: -1,
-        blocks: [
-            [
-                [0, 1, 0, 0],
-                [0, 1, 0, 0],
-                [0, 1, 0, 0],
-                [0, 1, 0, 0],
-            ],
-            [
-                [0, 0, 0, 0],
-                [1, 1, 1, 1],
-                [0, 0, 0, 0],
-                [0, 0, 0, 0],
-            ],
-        ],
-    },
-    {
-        color: colors[3],
-        initShiftFromCenter: 0,
-        blocks: [
-            [
-                [1, 1],
-                [1, 1],
-            ],
-        ]
-    },
-    {
-        color: colors[4],
-        initShiftFromCenter: -1,
-        blocks: [
-            [
-                [0, 1, 0],
-                [0, 1, 0],
-                [0, 1, 1],
-            ],
-            [
-                [1, 1, 1],
-                [1, 0, 0],
-                [0, 0, 0],
-            ],
-        ],
-    },
-]
-
-function verifyDefinitions() {
-    if (colors.length != pieceDefs.length) {
-        throw 'Different number of colors and piece definitions.'
-    }
-}
 
 // Check if the piece collides with the dropped ones or moves out of the field.
 // moreShiftRow, moreShiftCol - number (0 - no shift)
@@ -347,4 +250,3 @@ function printInitialInfo() {
 
 setupKeyEvents()
 printInitialInfo()
-verifyDefinitions()
