@@ -15,7 +15,7 @@ let currPiece
 let pieceCount = 0
 let fullLinesCount = 0
 
-const colors = ['red', 'green', 'yellow', 'violet']
+const colors = ['red', 'green', 'yellow', 'violet', 'deepskyblue']
 
 const pieceDefs = [
     {
@@ -88,7 +88,29 @@ const pieceDefs = [
             ],
         ]
     },
+    {
+        color: colors[4],
+        initShiftFromCenter: -1,
+        blocks: [
+            [
+                [0, 1, 0],
+                [0, 1, 0],
+                [0, 1, 1],
+            ],
+            [
+                [1, 1, 1],
+                [1, 0, 0],
+                [0, 0, 0],
+            ],
+        ],
+    },
 ]
+
+function verifyDefinitions() {
+    if (colors.length != pieceDefs.length) {
+        throw 'Different number of colors and piece definitions.'
+    }
+}
 
 // Check if the piece collides with the dropped ones or moves out of the field.
 // moreShiftRow, moreShiftCol - number (0 - no shift)
@@ -318,7 +340,11 @@ function eatFullLine(rowIdx) {
     field[0] = createArrayWithValues(fieldColumns)
 }
 
-setupKeyEvents()
+function printInitialInfo() {
+    console.log(`Field size: ${fieldRows} rows, ${fieldColumns} columns.`)
+    console.log(`Center column: ${centerColumn}.`)
+}
 
-console.log(`Field size: ${fieldRows} rows, ${fieldColumns} columns.`)
-console.log(`Center column: ${centerColumn}.`)
+setupKeyEvents()
+printInitialInfo()
+verifyDefinitions()
