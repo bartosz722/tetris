@@ -17,8 +17,9 @@ let fullLinesCount = 0
 
 // Check if the piece collides with the dropped ones or moves out of the field.
 // moreShiftRow, moreShiftCol - number (0 - no shift)
-// newRotateIdx - wanted index or undefined
-function pieceCollides(piece, moreShiftRow, moreShiftCol, newRotateIdx) {
+// newRotateIdx - wanted index or undefined or null
+// allowOverTop - true or falsy
+function pieceCollides(piece, moreShiftRow, moreShiftCol, newRotateIdx, allowOverTop) {
     const rotateIdx = newRotateIdx ?? piece.rotateIdx
     const rows = piece.def.blocks[rotateIdx]
     for (let rowIdx = 0; rowIdx < rows.length; rowIdx++ ) {
@@ -28,6 +29,9 @@ function pieceCollides(piece, moreShiftRow, moreShiftCol, newRotateIdx) {
             if (pix) {
                 const rowPos = rowIdx + piece.shiftRow + moreShiftRow
                 const colPos = colIdx + piece.shiftCol + moreShiftCol
+                if (allowOverTop && rowPos < 0) {
+                    continue
+                }
                 if (rowPos < 0 || rowPos >= fieldRows || colPos < 0 || colPos >= fieldColumns) {
                     return true // Outside field.
                 }
@@ -91,11 +95,26 @@ function checkGameOver() {
     if (pieceCollides(currPiece, 0, 0)) {
         gameRunning = false
         gameOver = true
-        currPiece = null
         console.log(`Game over! Lines: ${fullLinesCount}`)
+        movePieceUpOnGameOver()
         return true
     }
     return false
+}
+
+function movePieceUpOnGameOver() {
+    const blocks = getCurrPieceBlocks()
+    for (let i = 1; i <= blocks.length; i++) {
+        if (!pieceCollides(currPiece, -i, 0, null, true)) {
+            currPiece.shiftRow -= i
+            return
+        }
+    }
+    console.error('Cannot find non-colliding position for the last piece.')
+}
+
+function getCurrPieceBlocks() {
+    return currPiece.def.blocks[currPiece.rotateIdx]
 }
 
 function setupKeyEvents() {

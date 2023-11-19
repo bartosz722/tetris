@@ -26,7 +26,6 @@ startTetris()
 - restart interval after dropping
 - przyciski start, restart
 - pokazywanie ułożonej linii (np. miganie)
-- game-over: show the last piece (partially cut off) instead of deleting it
 - probability of pieces
 - more pieces
 */
