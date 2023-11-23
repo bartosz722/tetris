@@ -23,7 +23,6 @@ refreshViewCallback = refreshView
 startTetris()
 
 /* TODO:
-- restart interval after dropping
 - przyciski start, restart
 - pokazywanie ułożonej linii (np. miganie)
 - probability of pieces

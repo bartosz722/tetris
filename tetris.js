@@ -14,6 +14,7 @@ let field // Array of arrays with color name or null.
 let currPiece
 let pieceCount = 0
 let fullLinesCount = 0
+let movePieceDownTimeoutId = 0
 
 // Check if the piece collides with the dropped ones or moves out of the field.
 // moreShiftRow, moreShiftCol - number (0 - no shift)
@@ -61,7 +62,6 @@ function startTetris() {
     gameRunning = true
     putNewPiece()
     refreshViewCallback()
-    setInterval(movePieceDown, moveDownInterval)
 }
 
 function clearField() {
@@ -82,10 +82,12 @@ function putNewPiece() {
         shiftCol: shiftCol,
         rotateIdx: 0,
     }
-    
+
     if (checkGameOver()) {
         return
     }
+
+    setMovePieceDownTimeout()
 
     pieceCount += 1
     console.log(`New piece: count ${pieceCount}, defIdx ${defIdx}`)
@@ -171,6 +173,16 @@ function getNextRotateIdx(piece, right) {
     return nextIdx
 }
 
+function setMovePieceDownTimeout() {
+    clearTimeout(movePieceDownTimeoutId)
+    movePieceDownTimeoutId = setTimeout(movePieceDownTimeoutHandler, moveDownInterval)
+}
+
+function movePieceDownTimeoutHandler() {
+    movePieceDownTimeoutId = 0
+    movePieceDown()
+}
+
 function movePieceDown() {
     if (gameRunning) {
         if (pieceCollides(currPiece, 1, 0)) {
@@ -179,6 +191,7 @@ function movePieceDown() {
         }
         else {
             currPiece.shiftRow += 1
+            setMovePieceDownTimeout()
         }
         refreshViewCallback()
     }
