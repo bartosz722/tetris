@@ -25,6 +25,6 @@ startTetris()
 /* TODO:
 - przyciski start, restart
 - pokazywanie ułożonej linii (np. miganie)
-- probability of pieces
+- zwiększanie prędkości wraz z układaniem linii
 - more pieces
 */

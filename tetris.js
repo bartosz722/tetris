@@ -72,8 +72,7 @@ function clearField() {
 }
 
 function putNewPiece() {
-    const defIdx = getRandomInt(pieceDefs.length)
-    const def = pieceDefs[defIdx]
+    const def = getRandomPieceDef()
     const shiftCol = centerColumn + def.initShiftFromCenter
     
     currPiece = {
@@ -90,7 +89,7 @@ function putNewPiece() {
     setMovePieceDownTimeout()
 
     pieceCount += 1
-    console.log(`New piece: count ${pieceCount}, defIdx ${defIdx}`)
+    console.log(`New piece: count ${pieceCount}`)
 }
 
 function checkGameOver() {
