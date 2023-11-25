@@ -2,12 +2,10 @@
 
 'use strict'
 
-const colors = ['red', 'green', 'yellow', 'violet', 'deepskyblue']
-
 const pieceDefs = [
     {
-        color: colors[0],
-        frequency: 2,
+        color: 'red',
+        frequency: 4,
         initShiftFromCenter: -1,
         blocks: [
             [
@@ -33,7 +31,7 @@ const pieceDefs = [
         ],
     },
     {
-        color: colors[1],
+        color: 'green',
         frequency: 3,
         initShiftFromCenter: -1,
         blocks: [
@@ -50,8 +48,25 @@ const pieceDefs = [
         ],
     },
     {
-        color: colors[2],
-        frequency: 1,
+        color: 'gray',
+        frequency: 3,
+        initShiftFromCenter: -1,
+        blocks: [
+            [
+                [0, 1, 1],
+                [1, 1, 0],
+                [0, 0, 0],
+            ],
+            [
+                [1, 0, 0],
+                [1, 1, 0],
+                [0, 1, 0],
+            ],
+        ],
+    },
+    {
+        color: 'yellow',
+        frequency: 2,
         initShiftFromCenter: -1,
         blocks: [
             [
@@ -69,8 +84,8 @@ const pieceDefs = [
         ],
     },
     {
-        color: colors[3],
-        frequency: 1,
+        color: 'violet',
+        frequency: 2,
         initShiftFromCenter: 0,
         blocks: [
             [
@@ -80,7 +95,7 @@ const pieceDefs = [
         ]
     },
     {
-        color: colors[4],
+        color: 'deepskyblue',
         frequency: 3,
         initShiftFromCenter: -1,
         blocks: [
@@ -106,14 +121,39 @@ const pieceDefs = [
             ],
         ],
     },
+    {
+        color: 'orange',
+        frequency: 3,
+        initShiftFromCenter: -1,
+        blocks: [
+            [
+                [0, 1, 0],
+                [0, 1, 0],
+                [1, 1, 0],
+            ],
+            [
+                [1, 0, 0],
+                [1, 1, 1],
+                [0, 0, 0],
+            ],
+            [
+                [0, 1, 1],
+                [0, 1, 0],
+                [0, 1, 0],
+            ],
+            [
+                [0, 0, 0],
+                [1, 1, 1],
+                [0, 0, 1],
+            ],
+        ],
+    },
 ]
 
 let pieceFrequencySteps = []
 
 function verifyPieceDefinitions() {
-    if (colors.length != pieceDefs.length) {
-        throw 'Different number of colors and piece definitions.'
-    }
+    // So for nothing...
 }
 
 function setupPieceFrequencies() {

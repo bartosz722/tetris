@@ -26,5 +26,4 @@ startTetris()
 - przyciski start, restart
 - pokazywanie ułożonej linii (np. miganie)
 - zwiększanie prędkości wraz z układaniem linii
-- more pieces
 */
