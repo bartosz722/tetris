@@ -189,6 +189,7 @@ function movePieceDownTimeoutHandler() {
 function movePieceDown() {
     if (pieceCollides(currPiece, 1, 0)) {
         settlePiece()
+        eatFullLines()
         putNewPiece()
     }
     else {
