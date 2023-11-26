@@ -5,7 +5,7 @@
 const fieldRows = 20
 const fieldColumns = 15
 const moveDownInterval = 1000 // ms
-const fullLinesMarkingTime = 1000 // ms
+const fullLinesMarkingTime = 500 // ms
 const centerColumn = getCenterColumn()
 
 let refreshViewCallback // Must be set before the game is started.
@@ -294,7 +294,7 @@ function eatFullLines() {
         if (row.every(c => c != null)) {
             eatFullLine(rowIdx)
             fullLinesCount++
-            console.log(`Full line at row ${rowIdx}. Total: ${fullLinesCount}`)
+            console.log(`Eating full line at row ${rowIdx}. Total: ${fullLinesCount}`)
         }
         else {
             rowIdx--
@@ -307,6 +307,10 @@ function eatFullLine(rowIdx) {
         field[rowIdx] = field[rowIdx - 1]
     }
     field[0] = createArrayWithValues(fieldColumns)
+}
+
+function isFullLineInRow(rowIdx) {
+    return fullLineRows.includes(rowIdx)
 }
 
 function printInitialInfo() {

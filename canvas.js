@@ -20,10 +20,12 @@ function clearView() {
 function redrawField() {
     clearView()
     for (let ri = 0; ri < fieldRows; ri++) {
+        const fullLine = isFullLineInRow(ri)
+        const borderColor = fullLine ? 'green' : 'black'
         for (let ci = 0; ci < fieldColumns; ci++) {
-            const color = getFieldColor(ri, ci)
-            if (color)
-                paintBlock1(ri, ci, color)
+            const fillColor = fullLine ? 'white' : getFieldColor(ri, ci)
+            if (fillColor)
+                paintBlock(ri, ci, fillColor, borderColor)
         }
     }
 
@@ -35,34 +37,12 @@ function redrawField() {
     // ctx.stroke()
 }
 
-function paintBlock1(row, col, color) {
+function paintBlock(row, col, fillColor, borderColor) {
     ctx.beginPath()
-    ctx.fillStyle = color
+    ctx.fillStyle = fillColor
     ctx.lineWidth = 2
-    ctx.strokeStyle = 'black';
+    ctx.strokeStyle = borderColor;
     ctx.rect(col * pixPerBlockX, row * pixPerBlockY, pixPerBlockX, pixPerBlockY)
     ctx.fill()
     ctx.stroke()
-}
-
-function paintBlock2(row, col, color) {
-    ctx.beginPath()
-    ctx.fillStyle = 'black'
-    ctx.rect(
-        col * pixPerBlockX, 
-        row * pixPerBlockY, 
-        pixPerBlockX, 
-        pixPerBlockY)
-    ctx.fill()
-
-    const shiftX = pixPerBlockX * lineWidthFactor
-    const shiftY = pixPerBlockY * lineWidthFactor
-    ctx.beginPath()
-    ctx.fillStyle = color
-    ctx.rect(
-        col * pixPerBlockX + shiftX, 
-        row * pixPerBlockY + shiftY, 
-        pixPerBlockX - 2 * shiftX, 
-        pixPerBlockY - 2 * shiftY)
-    ctx.fill()
 }
