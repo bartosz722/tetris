@@ -8,7 +8,7 @@ const moveDownInterval = 1000 // ms
 const centerColumn = getCenterColumn()
 
 let refreshViewCallback // Must be set before the game is started.
-let gameRunning = false
+let userCanMovePiece = false
 let gameOver = false
 let field // Array of arrays with color name or null.
 let currPiece
@@ -59,7 +59,7 @@ function getCenterColumn() {
 function startTetris() {
     fullLinesCount = 0
     clearField()
-    gameRunning = true
+    userCanMovePiece = true
     putNewPiece()
     refreshViewCallback()
 }
@@ -94,10 +94,11 @@ function putNewPiece() {
 
 function checkGameOver() {
     if (pieceCollides(currPiece, 0, 0)) {
-        gameRunning = false
+        userCanMovePiece = false
         gameOver = true
         console.log(`Game over! Lines: ${fullLinesCount}`)
         movePieceUpOnGameOver()
+        clearMovePieceDownTimeout()
         return true
     }
     return false
@@ -125,38 +126,36 @@ function setupKeyEvents() {
 function handleKeyDown(e) {
     // console.log(e.code)
     if (e.code == 'ArrowRight') {
-        tryMovePieceOnSide(true)
+        userCanMovePiece && tryMovePieceOnSide(true)
     }
     else if (e.code == 'ArrowLeft') {
-        tryMovePieceOnSide(false)
+        userCanMovePiece && tryMovePieceOnSide(false)
     }
     else if (e.code == 'ArrowUp') {
-        tryRotatePiece(true)
+        userCanMovePiece && tryRotatePiece(true)
     }
     else if (e.code == 'ArrowDown') {
-        movePieceDown()
+        userCanMovePiece && movePieceDown()
     }
     else if (e.code == 'Space') {
-        dropPiece()
+        userCanMovePiece && dropPiece()
     }
 }
 
 // Move the piece if possible
 function tryMovePieceOnSide(right) {
     const shift = right ? 1 : -1
-    if (gameRunning && !pieceCollides(currPiece, 0, shift)) {
+    if (!pieceCollides(currPiece, 0, shift)) {
         currPiece.shiftCol += shift
         refreshViewCallback()        
     }
 }
 
 function tryRotatePiece(right) {
-    if (gameRunning) {
-        const newRotateIdx = getNextRotateIdx(currPiece, right)
-        if (!pieceCollides(currPiece, 0, 0, newRotateIdx)) {
-            currPiece.rotateIdx = newRotateIdx
-            refreshViewCallback()        
-        }
+    const newRotateIdx = getNextRotateIdx(currPiece, right)
+    if (!pieceCollides(currPiece, 0, 0, newRotateIdx)) {
+        currPiece.rotateIdx = newRotateIdx
+        refreshViewCallback()        
     }
 }
 
@@ -177,39 +176,40 @@ function setMovePieceDownTimeout() {
     movePieceDownTimeoutId = setTimeout(movePieceDownTimeoutHandler, moveDownInterval)
 }
 
+function clearMovePieceDownTimeout() {
+    clearTimeout(movePieceDownTimeoutId)
+    movePieceDownTimeoutId = 0
+}
+
 function movePieceDownTimeoutHandler() {
     movePieceDownTimeoutId = 0
     movePieceDown()
 }
 
 function movePieceDown() {
-    if (gameRunning) {
-        if (pieceCollides(currPiece, 1, 0)) {
-            settlePiece()
-            putNewPiece()
-        }
-        else {
-            currPiece.shiftRow += 1
-            setMovePieceDownTimeout()
-        }
-        refreshViewCallback()
+    if (pieceCollides(currPiece, 1, 0)) {
+        settlePiece()
+        putNewPiece()
     }
+    else {
+        currPiece.shiftRow += 1
+        setMovePieceDownTimeout()
+    }
+    refreshViewCallback()
 }
 
 function dropPiece() {
-    if (gameRunning) {
-        for (let shift = 1; shift <= fieldRows; shift++) {
-            if (pieceCollides(currPiece, shift, 0)) {
-                currPiece.shiftRow += shift - 1
-                settlePiece()
-                eatFullLines()
-                putNewPiece()
-                refreshViewCallback()
-                return
-            }
+    for (let shift = 1; shift <= fieldRows; shift++) {
+        if (pieceCollides(currPiece, shift, 0)) {
+            currPiece.shiftRow += shift - 1
+            settlePiece()
+            eatFullLines()
+            putNewPiece()
+            refreshViewCallback()
+            return
         }
-        throw 'Piece not settled'
     }
+    throw 'Piece not settled'
 }
 
 function settlePiece() {
