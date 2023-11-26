@@ -5,11 +5,13 @@
 const fieldRows = 20
 const fieldColumns = 15
 const moveDownInterval = 1000 // ms
+const fullLinesMarkingTime = 1000 // ms
 const centerColumn = getCenterColumn()
 
 let refreshViewCallback // Must be set before the game is started.
 let userCanMovePiece = false
 let gameOver = false
+let fullLineRows = [] // Full lines that have just been completed.
 let field // Array of arrays with color name or null.
 let currPiece
 let pieceCount = 0
@@ -98,7 +100,6 @@ function checkGameOver() {
         gameOver = true
         console.log(`Game over! Lines: ${fullLinesCount}`)
         movePieceUpOnGameOver()
-        clearMovePieceDownTimeout()
         return true
     }
     return false
@@ -172,7 +173,9 @@ function getNextRotateIdx(piece, right) {
 }
 
 function setMovePieceDownTimeout() {
-    clearTimeout(movePieceDownTimeoutId)
+    if (movePieceDownTimeoutId != 0) {
+        throw 'Another movePieceDownTimeout is active'
+    }
     movePieceDownTimeoutId = setTimeout(movePieceDownTimeoutHandler, moveDownInterval)
 }
 
@@ -187,10 +190,10 @@ function movePieceDownTimeoutHandler() {
 }
 
 function movePieceDown() {
+    clearMovePieceDownTimeout()
     if (pieceCollides(currPiece, 1, 0)) {
         settlePiece()
-        eatFullLines()
-        putNewPiece()
+        checkFullLines()
     }
     else {
         currPiece.shiftRow += 1
@@ -200,17 +203,47 @@ function movePieceDown() {
 }
 
 function dropPiece() {
+    clearMovePieceDownTimeout()
     for (let shift = 1; shift <= fieldRows; shift++) {
         if (pieceCollides(currPiece, shift, 0)) {
             currPiece.shiftRow += shift - 1
             settlePiece()
-            eatFullLines()
-            putNewPiece()
+            checkFullLines()
             refreshViewCallback()
             return
         }
     }
     throw 'Piece not settled'
+}
+
+function checkFullLines() {
+    findFullLines()
+    if (fullLineRows.length > 0) {
+        console.log('Full lines at rows:', fullLineRows)
+        userCanMovePiece = false
+        setTimeout(eatFullLinesAndContinue, fullLinesMarkingTime)
+    } else {
+        putNewPiece()
+    }
+}
+
+function eatFullLinesAndContinue() {
+    fullLineRows = []
+    eatFullLines()
+    putNewPiece()
+    userCanMovePiece = true
+    refreshViewCallback()
+}
+
+function findFullLines() {
+    let fullLines = []
+    for (let rowIdx = 0; rowIdx < fieldRows; rowIdx++) {
+        const row = field[rowIdx]
+        if (row.every(c => c != null)) {
+            fullLines.push(rowIdx)
+        }
+    }
+    fullLineRows = fullLines
 }
 
 function settlePiece() {
@@ -228,6 +261,7 @@ function settlePiece() {
             }
         }
     }
+    currPiece = null
 }
 
 // Get the color using the the current and dropped pieces.
