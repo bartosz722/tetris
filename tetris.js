@@ -4,7 +4,10 @@
 
 const fieldRows = 20
 const fieldColumns = 15
-const moveDownInterval = 1000 // ms
+const initMoveDownInterval = 1000 // ms
+const minMoveDownInterval = 100 // ms
+const speedUpStep = 100 // ms
+const speedUpLines = 5 // Speed up after this number of full lines.
 const fullLinesMarkingTime = 500 // ms
 const centerColumn = getCenterColumn()
 
@@ -17,6 +20,7 @@ let currPiece
 let pieceCount = 0
 let fullLinesCount = 0
 let movePieceDownTimeoutId = 0
+let moveDownInterval = initMoveDownInterval
 
 // Check if the piece collides with the dropped ones or moves out of the field.
 // moreShiftRow, moreShiftCol - number (0 - no shift)
@@ -231,8 +235,20 @@ function eatFullLinesAndContinue() {
     fullLineRows = []
     eatFullLines()
     putNewPiece()
+    adjustMoveDownInterval()
     userCanMovePiece = true
     refreshViewCallback()
+}
+
+function adjustMoveDownInterval() {
+    let newInterval = initMoveDownInterval - speedUpStep * (getLevel() - 1)
+    if (newInterval < minMoveDownInterval) {
+        newInterval = minMoveDownInterval
+    }
+    if (newInterval != moveDownInterval) {
+        moveDownInterval = newInterval
+        console.log(`Move down interval: ${moveDownInterval} ms.`)
+    }
 }
 
 function findFullLines() {
@@ -316,6 +332,12 @@ function isFullLineInRow(rowIdx) {
 function printInitialInfo() {
     console.log(`Field size: ${fieldRows} rows, ${fieldColumns} columns.`)
     console.log(`Center column: ${centerColumn}.`)
+    console.log(`Move down interval: ${moveDownInterval} ms.`)
+}
+
+// Get the level. The lowest level is 1.
+function getLevel() {
+    return Math.floor(fullLinesCount / speedUpLines) + 1
 }
 
 setupKeyEvents()

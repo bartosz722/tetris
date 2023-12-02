@@ -24,5 +24,6 @@ startTetris()
 
 /* TODO:
 - przyciski start, restart
-- zwiększanie prędkości wraz z układaniem linii
+- pauza
+- lekkie upiększenie panelu
 */
