@@ -20,10 +20,8 @@ function positionControlPanel() {
 
 positionControlPanel()
 refreshViewCallback = refreshView
-startTetris()
 
 /* TODO:
-- przyciski start, restart
 - pauza
 - lekkie upiększenie panelu
 */

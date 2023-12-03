@@ -13,6 +13,7 @@ const centerColumn = getCenterColumn()
 
 let refreshViewCallback // Must be set before the game is started.
 let userCanMovePiece = false
+let gameStarted = false
 let gameOver = false
 let fullLineRows = [] // Full lines that have just been completed.
 let field // Array of arrays with color name or null.
@@ -21,6 +22,22 @@ let pieceCount = 0
 let fullLinesCount = 0
 let movePieceDownTimeoutId = 0
 let moveDownInterval = initMoveDownInterval
+
+function startTetris() {
+    console.log('Starting the game.')
+    gameStarted = true
+    gameOver = false
+    fullLineRows = []
+    fullLinesCount = 0
+    pieceCount = 0
+    clearField()
+    moveDownInterval = initMoveDownInterval
+    userCanMovePiece = true
+    printInitialInfo()
+    clearMovePieceDownTimeout()
+    putNewPiece()
+    refreshViewCallback()
+}
 
 // Check if the piece collides with the dropped ones or moves out of the field.
 // moreShiftRow, moreShiftCol - number (0 - no shift)
@@ -62,14 +79,6 @@ function getCenterColumn() {
     }
 }
 
-function startTetris() {
-    fullLinesCount = 0
-    clearField()
-    userCanMovePiece = true
-    putNewPiece()
-    refreshViewCallback()
-}
-
 function clearField() {
     field = []
     for (let r = 0; r < fieldRows; r++) {
@@ -102,6 +111,7 @@ function checkGameOver() {
     if (pieceCollides(currPiece, 0, 0)) {
         userCanMovePiece = false
         gameOver = true
+        gameStarted = false
         console.log(`Game over! Lines: ${fullLinesCount}`)
         movePieceUpOnGameOver()
         return true
@@ -129,7 +139,6 @@ function setupKeyEvents() {
 }
 
 function handleKeyDown(e) {
-    // console.log(e.code)
     if (e.code == 'ArrowRight') {
         userCanMovePiece && tryMovePieceOnSide(true)
     }
@@ -143,7 +152,12 @@ function handleKeyDown(e) {
         userCanMovePiece && movePieceDown()
     }
     else if (e.code == 'Space') {
-        userCanMovePiece && dropPiece()
+        if (gameStarted) {
+            userCanMovePiece && dropPiece()
+        } 
+        else if (!gameOver) {
+            startTetris()
+        }
     }
 }
 
@@ -341,4 +355,3 @@ function getLevel() {
 }
 
 setupKeyEvents()
-printInitialInfo()
