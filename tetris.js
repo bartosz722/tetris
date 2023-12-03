@@ -8,7 +8,7 @@ const initMoveDownInterval = 1000 // ms
 const minMoveDownInterval = 100 // ms
 const speedUpStep = 100 // ms
 const speedUpLines = 5 // Speed up after this number of full lines.
-const fullLinesMarkingTime = 500 // ms
+const fullLinesMarkingTime = 200 // ms
 const centerColumn = getCenterColumn()
 
 let refreshViewCallback // Must be set before the game is started.
