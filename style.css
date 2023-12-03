@@ -17,9 +17,22 @@ html, body {
     margin-top: 20px;
     font-size: 30px;
     font-family: sans-serif;
+    width: 25%;
+    max-width: 300px;
+    border: 3px solid #2490a3;
+    padding: 10px;
+}
+
+#control-panel > div {
+    margin-bottom: 10px;
+}
+
+#title {
+    text-align: center;
 }
 
 #game-over {
+    visibility: hidden;
     color: red;
     animation: game-over-fading 3s linear alternate infinite;
 }
@@ -28,4 +41,16 @@ html, body {
     100% {
         color: brown;
     }
+}
+
+#button-container {
+    display: flex;
+    gap: 5%;
+}
+
+#control-panel button {
+    font-size: inherit;
+    flex-basis: 0;
+    flex-grow: 1;
+    overflow: hidden;
 }

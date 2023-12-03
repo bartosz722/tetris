@@ -10,6 +10,6 @@ function refreshPanel() {
     lineCounterElement.textContent = fullLinesCount
     levelElement.textContent = getLevel()
     if (gameOver) {
-        gameOverElement.removeAttribute('hidden')
+        gameOverElement.style.visibility = 'visible'
     }
 }
