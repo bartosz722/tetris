@@ -19,6 +19,11 @@ function clearView() {
 
 function redrawField() {
     clearView()
+
+    if (gamePaused) {
+        return
+    }
+
     for (let ri = 0; ri < fieldRows; ri++) {
         const fullLine = isFullLineInRow(ri)
         const borderColor = fullLine ? 'green' : 'black'

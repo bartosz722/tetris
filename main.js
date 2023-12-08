@@ -22,6 +22,6 @@ positionControlPanel()
 refreshViewCallback = refreshView
 
 /* TODO:
-- pauza
+- pauza: nie pozwól na ciągłe klikanie pause/unpause
 - lekkie upiększenie panelu
 */

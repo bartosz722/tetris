@@ -10,11 +10,13 @@
 <body>
   <canvas id="canvas1"></canvas>
 
+  <div id="paused-text" hidden>PAUSED</div>
+
   <div id="control-panel">
     <div id="title">TETRIS</div>
     <div id="button-container">
-      <button id="start-button" tabindex="-1" onclick="startOrRestart()">Start</button>
-      <button id="pause-button" tabindex="-1">Pause</button>
+      <button id="start-button" tabindex="-1" onclick="startButtonClicked()">Start</button>
+      <button id="pause-button" tabindex="-1" onclick="pauseButtonClicked()" disabled>Pause</button>
     </div>
     <div>Lines: <span id="line-counter">0</span></div>
     <div>Level: <span id="level">1</span></div>

@@ -15,6 +15,7 @@ let refreshViewCallback // Must be set before the game is started.
 let userCanMovePiece = false
 let gameStarted = false
 let gameOver = false
+let gamePaused = false
 let fullLineRows = [] // Full lines that have just been completed.
 let field // Array of arrays with color name or null.
 let currPiece
@@ -27,6 +28,7 @@ function startTetris() {
     console.log('Starting the game.')
     gameStarted = true
     gameOver = false
+    gamePaused = false
     fullLineRows = []
     fullLinesCount = 0
     pieceCount = 0
@@ -36,6 +38,25 @@ function startTetris() {
     printInitialInfo()
     clearMovePieceDownTimeout()
     putNewPiece()
+    refreshViewCallback()
+}
+
+function togglePauseTetris() {
+    if (!gameStarted) {
+        return
+    }
+
+    if (!gamePaused) {
+        gamePaused = true
+        userCanMovePiece = false
+        clearMovePieceDownTimeout()
+    }
+    else {
+        gamePaused = false
+        userCanMovePiece = true
+        setMovePieceDownTimeout(moveDownInterval / 2)
+    }
+
     refreshViewCallback()
 }
 
@@ -190,11 +211,11 @@ function getNextRotateIdx(piece, right) {
     return nextIdx
 }
 
-function setMovePieceDownTimeout() {
+function setMovePieceDownTimeout(timeout) {
     if (movePieceDownTimeoutId != 0) {
         throw 'Another movePieceDownTimeout is active'
     }
-    movePieceDownTimeoutId = setTimeout(movePieceDownTimeoutHandler, moveDownInterval)
+    movePieceDownTimeoutId = setTimeout(movePieceDownTimeoutHandler, timeout ?? moveDownInterval)
 }
 
 function clearMovePieceDownTimeout() {
