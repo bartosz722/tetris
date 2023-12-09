@@ -3,7 +3,7 @@
 'use strict'
 
 const fieldRows = 20
-const fieldColumns = 15
+const fieldColumns = 12
 const initMoveDownInterval = 1000 // ms
 const minMoveDownInterval = 100 // ms
 const speedUpStep = 100 // ms

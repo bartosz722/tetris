@@ -50,7 +50,7 @@ const pieceDefs = [
     {
         color: 'gray',
         frequency: 3,
-        initShiftFromCenter: -1,
+        initShiftFromCenter: 0,
         blocks: [
             [
                 [0, 1, 1],
@@ -97,12 +97,12 @@ const pieceDefs = [
     {
         color: 'deepskyblue',
         frequency: 3,
-        initShiftFromCenter: -1,
+        initShiftFromCenter: 0,
         blocks: [
             [
-                [0, 1, 0],
-                [0, 1, 0],
-                [0, 1, 1],
+                [1, 0, 0],
+                [1, 0, 0],
+                [1, 1, 0],
             ],
             [
                 [1, 1, 1],
@@ -124,7 +124,7 @@ const pieceDefs = [
     {
         color: 'orange',
         frequency: 3,
-        initShiftFromCenter: -1,
+        initShiftFromCenter: 0,
         blocks: [
             [
                 [0, 1, 0],
@@ -137,14 +137,14 @@ const pieceDefs = [
                 [0, 0, 0],
             ],
             [
-                [0, 1, 1],
-                [0, 1, 0],
-                [0, 1, 0],
+                [1, 1, 0],
+                [1, 0, 0],
+                [1, 0, 0],
             ],
             [
-                [0, 0, 0],
                 [1, 1, 1],
                 [0, 0, 1],
+                [0, 0, 0],
             ],
         ],
     },
