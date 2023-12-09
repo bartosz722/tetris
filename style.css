@@ -20,6 +20,7 @@ html, body {
     width: 25%;
     max-width: 300px;
     border: 3px solid #2490a3;
+    border-radius: 20px;
     padding: 10px;
 }
 
@@ -35,6 +36,7 @@ html, body {
     visibility: hidden;
     color: red;
     animation: game-over-fading 3s linear alternate infinite;
+    text-align: center;
 }
 
 @keyframes game-over-fading {
@@ -46,6 +48,24 @@ html, body {
 #button-container {
     display: flex;
     gap: 5%;
+}
+
+#button-container button {
+    background-color: #ffd73a;
+    border: 2px solid #ab8f36;
+    border-radius: 10px;
+}
+
+#button-container button:hover {
+    box-shadow: 7px 7px 5px #fc894d;
+}
+
+#button-container button:disabled {
+    color: #9fb2c2;
+}
+
+#button-container button:active {
+    background-color: #e7b800;
 }
 
 #control-panel button {
